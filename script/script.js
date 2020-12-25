@@ -403,13 +403,13 @@ window.addEventListener('DOMContentLoaded', function(){ //ждем загруз�
     //send-ajax-form
     const sendForm = () => {
         const errorMessage = 'Что-то пошло не так';
-        const loadMessage = 'Загрузка';
+        // const loadMessage = 'Загрузка';
         const successMesage = 'Спасибо, мы скоро с вами свяжемся';
         const form = document.querySelectorAll('form');
         const arrForm = [...form];
         
         const statusMessage = document.createElement('div');
-
+        statusMessage.classList.add('sk-rotating-plane');
         statusMessage.style.cssText = 'font-size: 2rem';
         statusMessage.style.color = '#fff';
 
@@ -418,7 +418,7 @@ window.addEventListener('DOMContentLoaded', function(){ //ждем загруз�
                 event.preventDefault();
 
                 elem.appendChild(statusMessage);
-                statusMessage.textContent = loadMessage;
+                // statusMessage.textContent = loadMessage;
                 const formData = new FormData(elem); //перед отправкой, получаем данные с формы input c атрибут name в объект
                 let body = {}; //если форма не понимает данные, то их сделаем вида JSON
                 formData.forEach((val, key) => {
@@ -426,9 +426,11 @@ window.addEventListener('DOMContentLoaded', function(){ //ждем загруз�
                 });
                 postData(body,
                     () => { // outputData, передаются callback в postData()
+                        statusMessage.classList.remove('sk-rotating-plane');
                         statusMessage.textContent = successMesage;
                 }, 
                     (error) => { //errorData, передаются callback в postData() 
+                        statusMessage.classList.remove('sk-rotating-plane');
                         statusMessage.textContent = errorMessage;
                         console.error(error);
                 });
