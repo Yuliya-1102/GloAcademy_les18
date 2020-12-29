@@ -403,7 +403,6 @@ window.addEventListener('DOMContentLoaded', function(){ //ждем загруз�
     //send-ajax-form
     const sendForm = () => {
         const errorMessage = 'Что-то пошло не так';
-        // const loadMessage = 'Загрузка';
         const successMesage = 'Спасибо, мы скоро с вами свяжемся';
         const form = document.querySelectorAll('form');
         const arrForm = [...form];
@@ -419,12 +418,12 @@ window.addEventListener('DOMContentLoaded', function(){ //ждем загруз�
 
                 elem.appendChild(statusMessage);
                 const formData = new FormData(elem); //перед отправкой, получаем данные с формы input c атрибут name в объект
-                let body = {}; //если форма не понимает данные, то их сделаем вида JSON
-                formData.forEach((val, key) => {
-                    body[key] = val;
-                });
-                postData(body)// 
-                    .then(() => { //resolve, передаются callback в Promise(resolve, reject)
+                postData(formData)// 
+                    .then((response) => { //resolve, передаются callback в Promise(resolve, reject), данные response
+                        if(response.status !== 200){
+                            throw new Error('status network not 200');
+                        }
+                        console.log(response);
                         statusMessage.classList.remove('sk-rotating-plane');
                         statusMessage.textContent = successMesage;
                     })
@@ -433,6 +432,7 @@ window.addEventListener('DOMContentLoaded', function(){ //ждем загруз�
                         statusMessage.textContent = errorMessage;
                         console.error(error);
                     });
+
                 //очистка формы
                 let elementForm = [...elem.elements].filter(item => {
                     return item.tagName.toUppercase !== 'button' &&
@@ -441,26 +441,18 @@ window.addEventListener('DOMContentLoaded', function(){ //ждем загруз�
                 elementForm.forEach(item => {
                     item.value = '';
                 });
+
              });
         });
 
-        const postData = (body) => {
-            return new Promise((resolve, reject) => {// создали promise с ф-циями для then
-                const request = new XMLHttpRequest();
-                request.addEventListener('readystatechange', () => {
-                if(request.readyState !== 4){ //пока не 4, останавливем дальше действие
-                    return;
-                }
-                if(request.status === 200){
-                    resolve();
-                } else{
-                    reject(request.status);
-                }
-            });
-            request.open('POST', './server.php'); //настроили сам запрос, метод 'POST' и файл ./server.php
-            request.setRequestHeader('Content-Type', 'application/json'); //'multipart/form-data' добавили заголовки
-            request.send(JSON.stringify(body)); //отправили на сервер данные с form Network в разделе Headers смотрим данные
-            });
+        const postData = (formData) => {
+            return fetch('./server.php', { //второй параметр у fetch
+                method: 'POST', //по умолчанию GET
+                headers: {
+                    'Content-Type': 'application/json'//свойство и значение
+                },
+                body: formData // данные с формы input c атрибут name в объект
+            }); //возвращает промис, а выше мы его обработали
         };
 
         //валидация форм
