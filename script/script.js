@@ -418,7 +418,11 @@ window.addEventListener('DOMContentLoaded', function(){ //ждем загруз�
 
                 elem.appendChild(statusMessage);
                 const formData = new FormData(elem); //перед отправкой, получаем данные с формы input c атрибут name в объект
-                postData(formData)// 
+                let body = {};
+                formData.forEach((val, key) => {
+                    body[key] = val;
+                });
+                postData(body)
                     .then((response) => { //resolve, передаются callback в Promise(resolve, reject), данные response
                         if(response.status !== 200){
                             throw new Error('status network not 200');
@@ -445,13 +449,13 @@ window.addEventListener('DOMContentLoaded', function(){ //ждем загруз�
              });
         });
 
-        const postData = (formData) => {
+        const postData = (body) => {
             return fetch('./server.php', { //второй параметр у fetch
                 method: 'POST', //по умолчанию GET
                 headers: {
                     'Content-Type': 'application/json'//свойство и значение
                 },
-                body: formData // данные с формы input c атрибут name в объект
+                body: JSON.stringify(body) // данные с формы input c атрибут name в объект
             }); //возвращает промис, а выше мы его обработали
         };
 
