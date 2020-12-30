@@ -427,7 +427,6 @@ window.addEventListener('DOMContentLoaded', function(){ //ждем загруз�
                         if(response.status !== 200){
                             throw new Error('status network not 200');
                         }
-                        console.log(response);
                         statusMessage.classList.remove('sk-rotating-plane');
                         statusMessage.textContent = successMesage;
                     })
@@ -465,7 +464,7 @@ window.addEventListener('DOMContentLoaded', function(){ //ждем загруз�
                 [...elem.elements].forEach(item => {
                     item.addEventListener('input', () => {
                         if(item.type === 'tel'){
-                            item.value = item.value.match(/\d+/);
+                            item.value = item.value.match(/\+?\d+/);
                         } else if(item.type === 'text' && item.id !== 'form2-message'){
                             item.value = item.value.match(/([а-яё ])+/gi);
                         } else if(item.id === 'form2-message'){
