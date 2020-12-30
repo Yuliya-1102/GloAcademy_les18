@@ -1,4 +1,4 @@
-function countTimer(deadline){
+function countTimer(){
     let timerHours = document.querySelector('#timer-hours');
     let timerMinutes = document.querySelector('#timer-minutes');
     let timerSeconds = document.querySelector('#timer-seconds');
@@ -6,7 +6,7 @@ function countTimer(deadline){
     const addZero = n => n < 10 ? '0' + n : n;
 
     function getTimeRemaining(){
-        let dateStop = new Date(deadline).getTime(); //дата дедлайна в милисекундах
+        let dateStop = new Date('7 january 2021').getTime(); //дата дедлайна в милисекундах
         let dateNow = new Date().getTime(); //дата сейчас в милисекундах
         let timeRemaining = (dateStop - dateNow) / 1000; //время, осталось до дедлайна в сек (1000)
         let seconds = Math.floor(timeRemaining % 60);
@@ -31,6 +31,6 @@ function countTimer(deadline){
         }
     }
     let idInterval = setInterval(updateClock, 1000);
-};
+}
 
 export default countTimer;

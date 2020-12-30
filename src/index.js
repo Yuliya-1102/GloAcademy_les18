@@ -15,7 +15,7 @@
 
 
     //timer
-    countTimer('15 december 2020');
+    countTimer();
     //меню
     toggleMenu();
     // popup
