@@ -20,6 +20,6 @@ const toggleMenu = () => {
                 menu.classList.remove('active-menu');
             }
     });
-};
+}; 
 
 export default toggleMenu;

@@ -1,10 +1,7 @@
-import toggleMenu from "./toggleMenu";
-
 const togglePopUp = () => {
     const popup = document.querySelector('.popup');
-    const popupBtn = document.querySelectorAll('.popup-btn');
     const popupContent = document.querySelector('.popup-content');
-    
+    const service = document.querySelector('.service');
     //анимация
     function animate({duration, draw, timing}) {
         let start = performance.now();
@@ -20,29 +17,31 @@ const togglePopUp = () => {
           }
         });
       }
+
     // использование анимации
-    popupBtn.forEach((elem) => {
-            elem.addEventListener('click', () => {
-                let clientWidth = document.documentElement.clientWidth;
-                if(clientWidth > 768){
-                    popup.style.display = 'block';
-                    animate({
-                        duration: 1000,
-                        timing: function(timeFraction) {
-                        return timeFraction;
-                        },
-                        draw: function(progress) {
-                            popupContent.style.left = (progress * 50) + '%';
-                            popupContent.style.transform = 'translateX(-50%)';
-                        }
-                    });                        
-                } else{
-                    popup.style.display = 'block';
-                }
-            });
-     });
-    
-     // закрытие окна
+    service.addEventListener('click', (event) => {
+        const target = event.target;
+        if(target.classList.contains('popup-btn')){
+            let clientWidth = document.documentElement.clientWidth;
+            if(clientWidth > 768){
+                popup.style.display = 'block';
+                animate({
+                    duration: 1000,
+                    timing: function(timeFraction) {
+                    return timeFraction;
+                    },
+                    draw: function(progress) {
+                        popupContent.style.left = (progress * 50) + '%';
+                        popupContent.style.transform = 'translateX(-50%)';
+                    }
+                });                        
+            } else{
+                popup.style.display = 'block';
+            }
+        }
+    });
+
+    // закрытие окна
     popup.addEventListener('click', (event) => {
         let target = event.target;
         if(target.classList.contains('popup-close')){
@@ -56,5 +55,6 @@ const togglePopUp = () => {
         }
     });
 };
+
 
 export default togglePopUp;

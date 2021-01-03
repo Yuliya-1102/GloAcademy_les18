@@ -1,24 +1,28 @@
 const changePhotoCommand = () => {
-    const commandPhoto = document.querySelectorAll('.command__photo');
+    const command = document.querySelector('.command');
      
-        commandPhoto.forEach((elem) => {
             let targetSrc;
             let targetDataset;
-            elem.addEventListener('mouseenter', (event) => {
-                let target = event.target;
-                targetSrc = target.src;
-                targetDataset = target.dataset.img;
-
-                target.src = targetDataset;
-                target.dataset.img = targetSrc;
-            });
-            elem.addEventListener('mouseleave', (event) => {
+            command.addEventListener('mouseover', (event) => {
                 let target = event.target;
 
-                target.src = targetSrc;
-                target.dataset.img = targetDataset;
+                if(target.classList.contains('command__photo')){
+                    targetSrc = target.src;
+                    targetDataset = target.dataset.img;
+
+                    target.src = targetDataset;
+                    target.dataset.img = targetSrc;
+                }
+                
             });
-        });
- };
+            command.addEventListener('mouseout', (event) => {
+                let target = event.target;
+                if(target.classList.contains('command__photo')){
+                    target.src = targetSrc;
+                    target.dataset.img = targetDataset;
+                }
+            });
+
+};
 
  export default changePhotoCommand;

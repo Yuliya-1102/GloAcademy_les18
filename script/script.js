@@ -2,7 +2,7 @@ window.addEventListener('DOMContentLoaded', function(){ //ждем загруз�
     'use strict';
 
     //timer
-    function countTimer(deadline){
+    function countTimer(){
         let timerHours = document.querySelector('#timer-hours');
         let timerMinutes = document.querySelector('#timer-minutes');
         let timerSeconds = document.querySelector('#timer-seconds');
@@ -10,7 +10,7 @@ window.addEventListener('DOMContentLoaded', function(){ //ждем загруз�
         const addZero = n => n < 10 ? '0' + n : n;
 
         function getTimeRemaining(){
-            let dateStop = new Date(deadline).getTime(); //дата дедлайна в милисекундах
+            let dateStop = new Date('7 january 2021').getTime(); //дата дедлайна в милисекундах
             let dateNow = new Date().getTime(); //дата сейчас в милисекундах
             let timeRemaining = (dateStop - dateNow) / 1000; //время, осталось до дедлайна в сек (1000)
             let seconds = Math.floor(timeRemaining % 60);
@@ -36,7 +36,7 @@ window.addEventListener('DOMContentLoaded', function(){ //ждем загруз�
         }
         let idInterval = setInterval(updateClock, 1000);
     }
-    countTimer('15 december 2020');
+    countTimer();
 
     //меню
     const toggleMenu = () => {
@@ -67,9 +67,8 @@ window.addEventListener('DOMContentLoaded', function(){ //ждем загруз�
     // popup
     const togglePopUp = () => {
         const popup = document.querySelector('.popup');
-        const popupBtn = document.querySelectorAll('.popup-btn');
         const popupContent = document.querySelector('.popup-content');
-        
+        const service = document.querySelector('.service');
         //анимация
         function animate({duration, draw, timing}) {
             let start = performance.now();
@@ -85,29 +84,31 @@ window.addEventListener('DOMContentLoaded', function(){ //ждем загруз�
               }
             });
           }
+
         // использование анимации
-        popupBtn.forEach((elem) => {
-                elem.addEventListener('click', () => {
-                    let clientWidth = document.documentElement.clientWidth;
-                    if(clientWidth > 768){
-                        popup.style.display = 'block';
-                        animate({
-                            duration: 1000,
-                            timing: function(timeFraction) {
-                            return timeFraction;
-                            },
-                            draw: function(progress) {
-                                popupContent.style.left = (progress * 50) + '%';
-                                popupContent.style.transform = 'translateX(-50%)';
-                            }
-                        });                        
-                    } else{
-                        popup.style.display = 'block';
-                    }
-                });
-         });
-        
-         // закрытие окна
+        service.addEventListener('click', (event) => {
+            const target = event.target;
+            if(target.classList.contains('popup-btn')){
+                let clientWidth = document.documentElement.clientWidth;
+                if(clientWidth > 768){
+                    popup.style.display = 'block';
+                    animate({
+                        duration: 1000,
+                        timing: function(timeFraction) {
+                        return timeFraction;
+                        },
+                        draw: function(progress) {
+                            popupContent.style.left = (progress * 50) + '%';
+                            popupContent.style.transform = 'translateX(-50%)';
+                        }
+                    });                        
+                } else{
+                    popup.style.display = 'block';
+                }
+            }
+        });
+    
+        // закрытие окна
         popup.addEventListener('click', (event) => {
             let target = event.target;
             if(target.classList.contains('popup-close')){
@@ -126,22 +127,23 @@ window.addEventListener('DOMContentLoaded', function(){ //ждем загруз�
     // плавный скролл
     const addScroll = () => {
         const menu = document.querySelector('menu');
-        const menuList = menu.querySelectorAll('ul>li>a');
         const container = document.querySelectorAll('.container');
         const serviceBlockBtn = document.querySelector('a[href*="#service-block"]');
         const service = document.querySelector('.service');
 
-        menuList.forEach((elem) => {
-            let linkHref = elem.hash.slice(1);
-            elem.addEventListener('click', () => {
+        
+        menu.addEventListener('click', (event) => {
+            const target = event.target;
+            if(target.matches('a')){
+                let linkHref = target.hash.slice(1);
                 container.forEach((item) => {
                     if(linkHref === item.parentElement.className){
                         item.scrollIntoView({block: "start", behavior: "smooth"});
                     }
                 });
-            });
+            }
         });
-
+        
         serviceBlockBtn.addEventListener('click', () => {
             service.scrollIntoView({block: "start", behavior: "smooth"});
         });
@@ -184,7 +186,6 @@ window.addEventListener('DOMContentLoaded', function(){ //ждем загруз�
     const slider = () => {
         const slider = document.querySelector('.portfolio-content');
         const slide = document.querySelectorAll('.portfolio-item');
-        const btn = document.querySelectorAll('.portfolio-btn');
         const portfolioDots = document.querySelector('.portfolio-dots');
 
         let currentSlide = 0; //номер слайда, нулевой
@@ -287,26 +288,30 @@ window.addEventListener('DOMContentLoaded', function(){ //ждем загруз�
 
     //менять фото на наведению
     const changePhotoCommand = () => {
-        const commandPhoto = document.querySelectorAll('.command__photo');
+        const command = document.querySelector('.command');
          
-            commandPhoto.forEach((elem) => {
                 let targetSrc;
                 let targetDataset;
-                elem.addEventListener('mouseenter', (event) => {
-                    let target = event.target;
-                    targetSrc = target.src;
-                    targetDataset = target.dataset.img;
-
-                    target.src = targetDataset;
-                    target.dataset.img = targetSrc;
-                });
-                elem.addEventListener('mouseleave', (event) => {
+                command.addEventListener('mouseover', (event) => {
                     let target = event.target;
 
-                    target.src = targetSrc;
-                    target.dataset.img = targetDataset;
+                    if(target.classList.contains('command__photo')){
+                        targetSrc = target.src;
+                        targetDataset = target.dataset.img;
+
+                        target.src = targetDataset;
+                        target.dataset.img = targetSrc;
+                    }
+                    
                 });
-            });
+                command.addEventListener('mouseout', (event) => {
+                    let target = event.target;
+                    if(target.classList.contains('command__photo')){
+                        target.src = targetSrc;
+                        target.dataset.img = targetDataset;
+                    }
+                });
+    
      };
     changePhotoCommand();
 
@@ -406,18 +411,22 @@ window.addEventListener('DOMContentLoaded', function(){ //ждем загруз�
         const successMesage = 'Спасибо, мы скоро с вами свяжемся';
         const form = document.querySelectorAll('form');
         const arrForm = [...form];
+        const popup = document.querySelector('.popup');
         
+        //создали сообщение
         const statusMessage = document.createElement('div');
         statusMessage.classList.add('sk-rotating-plane');
         statusMessage.style.cssText = 'font-size: 2rem';
         statusMessage.style.color = '#fff';
 
-        arrForm.forEach(elem => {
-            elem.addEventListener('submit', (event) => {
-                event.preventDefault();
+    
+        document.querySelector('body').addEventListener('submit', (event) => {
+            let target = event.target;
+            event.preventDefault();
 
-                elem.appendChild(statusMessage);
-                const formData = new FormData(elem); //перед отправкой, получаем данные с формы input c атрибут name в объект
+            if(target.matches('form')){
+                target.appendChild(statusMessage);
+                const formData = new FormData(target); //перед отправкой, получаем данные с формы input c атрибут name в объект
                 let body = {};
                 formData.forEach((val, key) => {
                     body[key] = val;
@@ -429,24 +438,23 @@ window.addEventListener('DOMContentLoaded', function(){ //ждем загруз�
                         }
                         statusMessage.classList.remove('sk-rotating-plane');
                         statusMessage.textContent = successMesage;
+                        clearForm();
+
+                        setTimeout(function(){
+                            statusMessage.textContent = '';
+                            if(target.matches('#form3')){
+                                popup.style.display = 'none';
+                            }
+                        }, 2000);
                     })
                    .catch((error) => { //reject, передаются callback в Promise(resolve, reject)
                         statusMessage.classList.remove('sk-rotating-plane');
                         statusMessage.textContent = errorMessage;
                         console.error(error);
                     });
-
-                //очистка формы
-                let elementForm = [...elem.elements].filter(item => {
-                    return item.tagName.toUppercase !== 'button' &&
-                    item.type !== 'button';
-                });
-                elementForm.forEach(item => {
-                    item.value = '';
-                });
-
-             });
+            }
         });
+      
 
         const postData = (body) => {
             return fetch('./server.php', { //второй параметр у fetch
@@ -458,24 +466,33 @@ window.addEventListener('DOMContentLoaded', function(){ //ждем загруз�
             }); //возвращает промис, а выше мы его обработали
         };
 
+         //очистка формы
+        const clearForm = () => {
+            arrForm.forEach(elem => {
+                let elementForm = [...elem.elements].filter(item => {
+                    return item.tagName.toUppercase !== 'button' &&
+                    item.type !== 'button';
+                });
+                elementForm.forEach(item => {
+                    item.value = '';
+                });
+            }); 
+        };
+
         //валидация форм
         const validForm = () => {
-            arrForm.forEach(elem => {
-                [...elem.elements].forEach(item => {
-                    item.addEventListener('input', () => {
-                        if(item.type === 'tel'){
-                            item.value = item.value.match(/\+?\d+/);
-                        } else if(item.type === 'text' && item.id !== 'form2-message'){
-                            item.value = item.value.match(/([а-яё ])+/gi);
-                        } else if(item.id === 'form2-message'){
-                            item.value = item.value.match(/([а-яё0-9 .,!?;])+/gi);
-                        } 
-                    });
-                });
+            document.querySelector('body').addEventListener('input', (event) => {
+                const target = event.target;
+                if(target.type === 'tel'){
+                    target.value = target.value.match(/\+?\d{1,13}/);
+                } else if(target.type === 'text' && target.id !== 'form2-message'){
+                    target.value = target.value.match(/[а-яё]+/gi);
+                } else if(target.id === 'form2-message'){
+                    target.value = target.value.match(/([а-яё0-9 .,!?;])+/gi);
+                }
             });
         };
         validForm();
-        
     };
     sendForm();
 
